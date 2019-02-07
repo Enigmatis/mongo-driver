@@ -1,24 +1,24 @@
 import { DocumentQuery, Model } from 'mongoose';
-import { BasicModel, ModuleCreator } from './model';
+import { RepositoryModel, ModelCreator } from './model';
 
-export abstract class PolarisRepository<T extends BasicModel> {
+export abstract class PolarisRepository<T extends RepositoryModel> {
     zeroModel: Model<T>;
 
-    protected constructor(private modelCreator: ModuleCreator<T>) {
+    protected constructor(private modelCreator: ModelCreator<T>) {
         this.zeroModel = this.modelCreator(0);
     }
 
     async findAll(reality: number, includeOperational?: boolean): Promise<T[]> {
         const requestedReality = this.modelCreator(reality);
-        const work = [requestedReality.find()];
+        const queries = [requestedReality.find()];
         if (includeOperational) {
-            work.push(this.zeroModel.find());
+            queries.push(this.zeroModel.find());
         }
-        return this.concatResults(...work);
+        return this.concatResults(...queries);
     }
 
-    private async concatResults(...work: Array<DocumentQuery<T[], T>>): Promise<T[]> {
-        const results = await Promise.all(work as any);
+    private async concatResults(...queries: Array<DocumentQuery<T[], T>>): Promise<T[]> {
+        const results = await Promise.all(queries as any);
         return Array.prototype.concat(...results);
     }
 }

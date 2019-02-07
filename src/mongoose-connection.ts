@@ -49,7 +49,7 @@ export class MongooseConnection implements DbConnection {
 
     private subscribeToEvents(db: mongoose.Connection) {
         db.on('connecting', () => {
-            this.logger.info('connecting to MongoDB...');
+            this.logger.info('Connecting to MongoDB...');
         });
         db.on('error', async error => {
             this.logger.error(`Error in MongoDb connection: '${error}'`);

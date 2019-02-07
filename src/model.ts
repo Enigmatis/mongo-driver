@@ -1,18 +1,18 @@
 import { Document, model, Model, Query, Schema } from 'mongoose';
 
-export interface BasicModel extends Document {
+export interface RepositoryModel extends Document {
     _id: string;
     createdAt: Date;
     updatedAt: Date;
     deleted: boolean;
 }
 
-export declare type ModuleCreator<T extends BasicModel> = (realityId: number) => Model<T>;
+export declare type ModelCreator<T extends RepositoryModel> = (realityId: number) => Model<T>;
 
-export const getModelCreator = <T extends BasicModel>(
+export const getModelCreator = <T extends RepositoryModel>(
     collectionPrefix: string,
     schema: Schema,
-): ModuleCreator<T> => {
+): ModelCreator<T> => {
     schema.add({
         createdAt: Date,
         updatedAt: Date,
@@ -34,5 +34,5 @@ export const getModelCreator = <T extends BasicModel>(
         this.where({ deleted: { $ne: true } });
     });
 
-    return (realityId: number) => model<T>(`book_reality-${realityId}`, schema);
+    return (realityId: number) => model<T>(`${collectionPrefix}_reality-${realityId}`, schema);
 };
