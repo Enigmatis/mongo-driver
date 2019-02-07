@@ -1,5 +1,5 @@
 import { DocumentQuery, Model } from 'mongoose';
-import { RepositoryModel, ModelCreator } from './model';
+import { ModelCreator, RepositoryModel } from './model';
 
 export abstract class PolarisRepository<T extends RepositoryModel> {
     zeroModel: Model<T>;
