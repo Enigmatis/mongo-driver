@@ -20,4 +20,4 @@ main.ts
 commitlint.config.js
 
 // npm pack
-enigmatis-polaris-logs-*.tgz
+mongo-driver-*.tgz
