@@ -1,0 +1,25 @@
+{
+  "name": "mongo-driver",
+  "version": "1.0.0",
+  "description": "MongoDB driver for @enigmatis/polaris",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Enigmatis/mongo-driver.git"
+  },
+  "keywords": [
+    "polaris",
+    "mongo",
+    "mongoose",
+    "mongodb"
+  ],
+  "author": "bikov95@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Enigmatis/mongo-driver/issues"
+  },
+  "homepage": "https://github.com/Enigmatis/mongo-driver#readme"
+}
