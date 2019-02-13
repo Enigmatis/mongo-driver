@@ -36,7 +36,7 @@ export class MongooseConnection implements DbConnection {
     async closeConnection() {
         this.wantToDisconnect = true;
         await mongoose.connection.close(true);
-        this.logger.error('Mongoose connection closed');
+        this.logger.warn('Mongoose connection closed');
     }
 
     private async connect(connectionString: string) {
