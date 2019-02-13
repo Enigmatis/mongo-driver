@@ -40,10 +40,12 @@
   },
   "homepage": "https://github.com/Enigmatis/mongo-driver#readme",
   "dependencies": {
-    "@enigmatis/polaris": "^1.4.0",
     "@types/mongoose": "^5.3.12",
     "@types/node": "10.12.12",
     "mongoose": "^5.4.10"
+  },
+  "peerDependencies": {
+    "@enigmatis/polaris": "^2.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.3.2",
