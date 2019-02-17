@@ -1,4 +1,4 @@
-import { DbConnection, GraphqlLogger } from '@enigmatis/polaris';
+import { DbConnection, GraphqlLogger } from '@enigmatis/utills';
 import * as mongoose from 'mongoose';
 
 export interface MongooseConnectionParams {
@@ -12,8 +12,9 @@ export class MongooseConnection implements DbConnection {
 
     constructor(
         private readonly options: MongooseConnectionParams,
-        private logger: GraphqlLogger,
-    ) {}
+        private logger: GraphqlLogger<any>,
+    ) {
+    }
 
     async initConnection() {
         mongoose.set('debug', (coll: string, method: string, query: string, doc: string) => {
