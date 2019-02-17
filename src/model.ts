@@ -2,8 +2,8 @@ import { Document, model, Model, Query, Schema } from 'mongoose';
 
 export interface RepositoryModel extends Document {
     _id: string;
-    createdAt: Date;
-    updatedAt: Date;
+    creationDate: Date;
+    lastUpdateDate: Date;
     deleted: boolean;
     realityId: number;
 }
@@ -20,8 +20,8 @@ export const getModelCreator = <T extends RepositoryModel>(
 
 const configSchema = <T extends RepositoryModel>(schema: Schema, realityId: number): Schema => {
     schema.add({
-        createdAt: Date,
-        updatedAt: Date,
+        creationDate: Date,
+        lastUpdateDate: Date,
         deleted: {
             type: Boolean,
             default: false,
@@ -30,10 +30,10 @@ const configSchema = <T extends RepositoryModel>(schema: Schema, realityId: numb
     });
     schema.pre('save', function(this: T, next) {
         const now = new Date();
-        if (!this.createdAt) {
-            this.createdAt = now;
+        if (!this.creationDate) {
+            this.creationDate = now;
         }
-        this.updatedAt = now;
+        this.lastUpdateDate = now;
         this.realityId = realityId;
         next();
     });
