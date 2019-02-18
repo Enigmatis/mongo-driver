@@ -13,8 +13,7 @@ export class MongooseConnection implements DbConnection {
     constructor(
         private readonly options: MongooseConnectionParams,
         private logger: GraphqlLogger<any>,
-    ) {
-    }
+    ) {}
 
     async initConnection() {
         mongoose.set('debug', (coll: string, method: string, query: string, doc: string) => {
