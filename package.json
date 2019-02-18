@@ -1,6 +1,6 @@
 {
   "name": "@enigmatis/mongo-driver",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "MongoDB driver for @enigmatis/polaris",
   "main": "./dist/main.js",
   "types": "./dist/main.d.ts",
