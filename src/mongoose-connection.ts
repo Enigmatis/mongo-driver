@@ -80,7 +80,7 @@ const subscribeToEvents = (
         if (!wantToDisconnect) {
             setTimeout(async () => {
                 await connect(options.connectionString);
-            }, options.waitUntilReconnectInMs || 0);
+            }, options.waitUntilReconnectInMs || 5000);
         }
     });
     isSubscribed = true;
