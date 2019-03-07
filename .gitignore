@@ -151,5 +151,6 @@ modules.xml
 # Compiled js
 dist/
 
+*.my-tests.*
 
 # End of https://www.gitignore.io/api/node,webstorm+iml

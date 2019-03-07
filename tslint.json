@@ -3,6 +3,11 @@
   "rulesDirectory": [
     "tslint-plugin-prettier"
   ],
+  "linterOptions": {
+    "exclude": [
+      "*.my-tests.*"
+    ]
+  },
   "jsRules": {},
   "extends": [
     "tslint:latest",

@@ -1,3 +1,2 @@
-export * from './model';
+export * from './model-creator';
 export * from './mongoose-connection';
-export * from './repository';

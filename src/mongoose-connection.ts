@@ -1,76 +1,87 @@
 import { DbConnection, GraphqlLogger } from '@enigmatis/utills';
 import * as mongoose from 'mongoose';
 
+export declare type MongooseDebugFunction = (
+    coll: string,
+    method: string,
+    query: string,
+    doc: string,
+) => void;
+
 export interface MongooseConnectionParams {
     connectionString: string;
     waitUntilReconnectInMs?: number;
 }
 
-export class MongooseConnection implements DbConnection {
-    private wantToDisconnect = false;
-    private isSubscribed = false;
+let wantToDisconnect = false;
+let isSubscribed = false;
 
-    constructor(
-        private readonly options: MongooseConnectionParams,
-        private logger: GraphqlLogger<any>,
-    ) {}
-
-    async initConnection() {
-        mongoose.set('debug', (coll: string, method: string, query: string, doc: string) => {
-            this.logger.debug(
-                `MONGOOSE: query executed: ${JSON.stringify({
-                    collection: coll,
-                    method,
-                    query,
-                    doc,
-                })}`,
-            );
-        });
-        this.wantToDisconnect = false;
-        if (!this.isSubscribed) {
-            await this.subscribeToEvents(mongoose.connection);
+export const initConnection = async (
+    options: MongooseConnectionParams,
+    logger: GraphqlLogger<any>,
+    debug?: MongooseDebugFunction,
+) => {
+    mongoose.set('debug', (coll: string, method: string, query: string, doc: string) => {
+        logger.debug(
+            `MONGOOSE: query executed: ${JSON.stringify({
+                collection: coll,
+                method,
+                query,
+                doc,
+            })}`,
+        );
+        if (debug) {
+            debug(coll, method, query, doc);
         }
-        await this.connect(this.options.connectionString);
+    });
+    mongoose.set('useFindAndModify', false);
+    wantToDisconnect = false;
+    if (!isSubscribed) {
+        await subscribeToEvents(mongoose.connection, logger, options);
     }
+    await connect(options.connectionString);
+};
 
-    async closeConnection() {
-        this.wantToDisconnect = true;
-        await mongoose.connection.close(true);
-        this.logger.warn('Mongoose connection closed');
-    }
+export const closeConnection = async () => {
+    wantToDisconnect = true;
+    await mongoose.connection.close(true);
+};
 
-    private async connect(connectionString: string) {
-        await mongoose.connect(connectionString, {
-            autoReconnect: true,
-            socketTimeoutMS: 0,
-            useNewUrlParser: true,
-        });
-    }
+const connect = async (connectionString: string) => {
+    await mongoose.connect(connectionString, {
+        autoReconnect: true,
+        socketTimeoutMS: 0,
+        useNewUrlParser: true,
+    });
+};
 
-    private subscribeToEvents(db: mongoose.Connection) {
-        db.on('connecting', () => {
-            this.logger.info('Connecting to MongoDB...');
-        });
-        db.on('error', async error => {
-            this.logger.error(`Error in MongoDb connection: '${error}'`);
-        });
-        db.on('connected', () => {
-            this.logger.info('MongoDB connected!');
-        });
-        db.on('open', () => {
-            this.logger.info('MongoDB connection opened!');
-        });
-        db.on('reconnected', () => {
-            this.logger.warn('MongoDB reconnected!');
-        });
-        db.on('disconnected', async () => {
-            this.logger.error('MongoDB disconnected!');
-            if (!this.wantToDisconnect) {
-                setTimeout(async () => {
-                    await this.connect(this.options.connectionString);
-                }, this.options.waitUntilReconnectInMs || 0);
-            }
-        });
-        this.isSubscribed = true;
-    }
-}
+const subscribeToEvents = (
+    db: mongoose.Connection,
+    logger: GraphqlLogger<any>,
+    options: MongooseConnectionParams,
+) => {
+    db.on('connecting', () => {
+        logger.info('Connecting to MongoDB...');
+    });
+    db.on('error', async error => {
+        logger.error(`Error in MongoDb connection: '${error}'`);
+    });
+    db.on('connected', () => {
+        logger.info('MongoDB connected!');
+    });
+    db.on('open', () => {
+        logger.info('MongoDB connection opened!');
+    });
+    db.on('reconnected', () => {
+        logger.warn('MongoDB reconnected!');
+    });
+    db.on('disconnected', async () => {
+        logger.error('MongoDB disconnected!');
+        if (!wantToDisconnect) {
+            setTimeout(async () => {
+                await connect(options.connectionString);
+            }, options.waitUntilReconnectInMs || 0);
+        }
+    });
+    isSubscribed = true;
+};
