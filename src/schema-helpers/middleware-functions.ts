@@ -83,5 +83,5 @@ export function preAggregate(this: Aggregate<any>) {
     this.pipeline().push({ $match: notDeleted });
 }
 
-export const getCollectionName = (collectionPrefix: string, realityId: number, blat?: string) =>
+export const getCollectionName = (collectionPrefix: string, realityId: number) =>
     `${collectionPrefix}_reality-${realityId}`;
