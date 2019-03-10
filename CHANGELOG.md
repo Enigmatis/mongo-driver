@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/Enigmatis/mongo-driver/compare/v1.3.0...v1.4.0) (2019-03-10)
+
+
+### Bug Fixes
+
+* **mistake:** remove test param from middleware ([7d42222](https://github.com/Enigmatis/mongo-driver/commit/7d42222))
+
+
+### Features
+
+* **schema:** added  middlewares to soft delete and realityId ([c2141c1](https://github.com/Enigmatis/mongo-driver/commit/c2141c1))
+
 # [1.3.0](https://github.com/Enigmatis/mongo-driver/compare/v1.2.0...v1.3.0) (2019-02-18)
 
 
