@@ -1,3 +1,4 @@
+import { PolarisRequestHeaders } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
 import { RepositoryModel } from '../model-creator';
 import { InnerModelType } from '../types';
@@ -6,35 +7,49 @@ import * as thisModule from './middleware-functions';
 
 export const addDynamicPropertiesToDocument = <T extends RepositoryModel>(
     document: T,
-    realityId: number,
+    { realityId, upn }: PolarisRequestHeaders,
 ) => {
     document.lastUpdateDate = new Date();
-    document.realityId = realityId;
+    document.realityId = realityId!;
+    document.createdBy = document.createdBy || upn;
+    document.lastUpdatedBy = upn;
 };
 
-export const getPreSave = (realityId: number) => {
+export const getPreSave = (headers: PolarisRequestHeaders) => {
     return function preSaveFunc(this: InnerModelType<any>, next: () => void) {
         // using thisModule to be abale to mock softRemoveFunc in tests
-        thisModule.addDynamicPropertiesToDocument(this, realityId);
+        thisModule.addDynamicPropertiesToDocument(this, headers);
         next();
     };
 };
 
-export const getPreInsertMany = (realityId: number) => {
+export const getPreInsertMany = (headers: PolarisRequestHeaders) => {
     return function preInsertMany(this: Model<any>, next: HookNextFunction, docs: any[]) {
         docs.forEach(doc => {
             // using thisModule to be abale to mock softRemoveFunc in tests
-            thisModule.addDynamicPropertiesToDocument(doc, realityId);
+            thisModule.addDynamicPropertiesToDocument(doc, headers);
         });
         return next();
     };
 };
 
-export function findHandlerFunc<T>(this: any) {
-    if (!this._conditions.deleted) {
-        this.where({ ...notDeleted });
-    }
-}
+export const getFindHandler = (headers: PolarisRequestHeaders) => {
+    return function findHandler(this: any) {
+        const conditions = this._conditions;
+        const realityId =
+            headers.realityId !== undefined &&
+            conditions.realityId === undefined &&
+            (headers.includeLinkedOperation
+                ? { realityId: { $or: [headers.realityId, 0] } }
+                : { realityId: headers.realityId });
+        this.where({
+            ...realityId,
+            ...(!conditions.deleted && notDeleted),
+            ...(headers.dataVersion &&
+                !conditions.dataVersion && { dataVersion: { $gt: headers.dataVersion } }),
+        });
+    };
+};
 
 export function softRemoveFunc<T>(
     this: Model<any>,
@@ -83,5 +98,5 @@ export function preAggregate(this: Aggregate<any>) {
     this.pipeline().push({ $match: notDeleted });
 }
 
-export const getCollectionName = (collectionPrefix: string, realityId: number) =>
+export const getCollectionName = (collectionPrefix: string, { realityId }: PolarisRequestHeaders) =>
     `${collectionPrefix}_reality-${realityId}`;

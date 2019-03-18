@@ -1,7 +1,8 @@
+import { PolarisRequestHeaders } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model, Schema } from 'mongoose';
 import {
-    findHandlerFunc,
     findOneAndSoftDelete,
+    getFindHandler,
     getPreInsertMany,
     getPreSave,
     preAggregate,
@@ -9,7 +10,8 @@ import {
     softRemoveFunc,
 } from './middleware-functions';
 
-export const addQueryMiddleware = (schema: Schema) => {
+export const addQueryMiddleware = (schema: Schema, headers: PolarisRequestHeaders) => {
+    const findHandlerFunc = getFindHandler(headers);
     ['find', 'findOne', 'findOneAndUpdate', 'update', 'count', 'updateOne', 'updateMany'].forEach(
         middleware => {
             schema.pre(middleware, findHandlerFunc as any);
@@ -26,11 +28,10 @@ export const addQueryMiddleware = (schema: Schema) => {
     };
 };
 
-export const addModelMiddleware = (schema: Schema, realityId: number) => {
-    schema.pre('insertMany', getPreInsertMany(realityId));
+export const addModelMiddleware = (schema: Schema, headers: PolarisRequestHeaders) => {
+    schema.pre('insertMany', getPreInsertMany(headers));
 };
 
-export const addDocumentMiddleware = (schema: Schema, realityId: number): Schema => {
-    schema.pre('save', getPreSave(realityId));
-    return schema;
+export const addDocumentMiddleware = (schema: Schema, headers: PolarisRequestHeaders) => {
+    schema.pre('save', getPreSave(headers));
 };
