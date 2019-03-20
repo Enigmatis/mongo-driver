@@ -41,9 +41,11 @@
   },
   "homepage": "https://github.com/Enigmatis/mongo-driver#readme",
   "dependencies": {
-    "@enigmatis/utills": "^1.0.1",
+    "@enigmatis/utills": "^1.2.0",
+    "@types/joi": "^14.3.2",
     "@types/mongoose": "^5.3.12",
     "@types/node": "10.12.12",
+    "joi": "^14.3.1",
     "mongoose": "^5.4.10"
   },
   "peerDependencies": {},
