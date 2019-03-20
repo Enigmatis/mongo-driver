@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/Enigmatis/mongo-driver/compare/v1.4.0...v1.5.0) (2019-03-20)
+
+
+### Features
+
+* **header:** get polaris headers in module creator and build query ([0ff9ec8](https://github.com/Enigmatis/mongo-driver/commit/0ff9ec8))
+
 # [1.4.0](https://github.com/Enigmatis/mongo-driver/compare/v1.3.0...v1.4.0) (2019-03-10)
 
 
