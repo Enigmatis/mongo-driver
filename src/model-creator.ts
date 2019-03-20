@@ -15,6 +15,7 @@ export interface RepositoryModel {
     lastUpdateDate: Date;
     deleted: boolean;
     realityId: number;
+    dataVersion: number;
 }
 
 export const getModelCreator = <T>(collectionPrefix: string, schema: Schema): ModelCreator<T> => {
