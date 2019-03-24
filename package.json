@@ -1,6 +1,6 @@
 {
   "name": "@enigmatis/mongo-driver",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "MongoDB driver for @enigmatis/polaris",
   "main": "./dist/src/main.js",
   "types": "./dist/src/main.d.ts",
@@ -42,6 +42,7 @@
   "homepage": "https://github.com/Enigmatis/mongo-driver#readme",
   "dependencies": {
     "@enigmatis/utills": "file:../utills",
+    "@types/joi": "^14.3.2",
     "@types/mongoose": "^5.3.12",
     "@types/node": "10.12.12",
     "mongoose": "^5.4.10"
