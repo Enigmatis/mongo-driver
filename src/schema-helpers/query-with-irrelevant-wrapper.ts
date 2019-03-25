@@ -3,9 +3,9 @@ import { Model } from 'mongoose';
 import { InnerModelType } from '../../../mongo-driver/src/types';
 import { RepositoryModel } from '../model-creator';
 
-export const QueryWithIrrelevant = async <T extends RepositoryModel>(
-    model: Model<InnerModelType<T>>,
-    result: T[],
+export const QueryWithIrrelevant = async(
+    model: Model<InnerModelType<any>>,
+    result: any[],
     dataVersion: number | undefined,
 ): Promise<QueryIrrResult> => {
     dataVersion = dataVersion || 0;
