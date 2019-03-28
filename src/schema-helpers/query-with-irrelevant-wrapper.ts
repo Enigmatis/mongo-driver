@@ -7,8 +7,10 @@ export const QueryWithIrrelevant = async(
     model: Model<InnerModelType<any>>,
     result: any[],
     dataVersion: number | undefined,
-): Promise<QueryIrrResult> => {
-    dataVersion = dataVersion || 0;
+): Promise<any> => {
+    if (!dataVersion) {
+        return result;
+    }
     const irrelevant = await model.find(
         {
             _id: { $nin: result.map(x => x._id) },
