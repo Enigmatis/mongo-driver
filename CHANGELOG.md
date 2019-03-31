@@ -1,3 +1,19 @@
+# [1.6.0](https://github.com/Enigmatis/mongo-driver/compare/v1.5.0...v1.6.0) (2019-03-31)
+
+
+### Bug Fixes
+
+* after sakak ([c0a0724](https://github.com/Enigmatis/mongo-driver/commit/c0a0724))
+* after sakak ([454d74e](https://github.com/Enigmatis/mongo-driver/commit/454d74e))
+* after sakak ([c802e4b](https://github.com/Enigmatis/mongo-driver/commit/c802e4b))
+* fix sakak and make irrelevant disappear if no data version provided ([7dd57e0](https://github.com/Enigmatis/mongo-driver/commit/7dd57e0))
+
+
+### Features
+
+* irrelevant entities are working! ([0b96cf6](https://github.com/Enigmatis/mongo-driver/commit/0b96cf6))
+* refactoring code location (query irr) ([8bfaabd](https://github.com/Enigmatis/mongo-driver/commit/8bfaabd))
+
 # [1.5.0](https://github.com/Enigmatis/mongo-driver/compare/v1.4.0...v1.5.0) (2019-03-20)
 
 
