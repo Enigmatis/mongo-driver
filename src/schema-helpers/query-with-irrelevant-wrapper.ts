@@ -7,7 +7,7 @@ export const QueryWithIrrelevant = async (
     result: any[],
     dataVersion: number | undefined,
 ): Promise<any> => {
-    if (!dataVersion) {
+    if (dataVersion === undefined) {
         return result;
     }
     const irrelevant = await model.find(
