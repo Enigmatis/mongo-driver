@@ -1,6 +1,6 @@
 import { QueryIrrelevantResult } from '@enigmatis/utills';
 import { Model } from 'mongoose';
-import { InnerModelType } from '../../../mongo-driver/src/types';
+import { InnerModelType } from '../types';
 
 export const QueryWithIrrelevant = async (
     model: Model<InnerModelType<any>>,
