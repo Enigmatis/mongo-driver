@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/Enigmatis/mongo-driver/compare/v1.6.0...v1.6.1) (2019-04-01)
+
+
+### Bug Fixes
+
+* after sakak ([29c2b12](https://github.com/Enigmatis/mongo-driver/commit/29c2b12))
+
 # [1.6.0](https://github.com/Enigmatis/mongo-driver/compare/v1.5.0...v1.6.0) (2019-03-31)
 
 
