@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/Enigmatis/mongo-driver/compare/v1.6.1...v1.7.0) (2019-04-02)
+
+
+### Features
+
+* multiple irrelevant entities for queries ([231a978](https://github.com/Enigmatis/mongo-driver/commit/231a978))
+
 ## [1.6.1](https://github.com/Enigmatis/mongo-driver/compare/v1.6.0...v1.6.1) (2019-04-01)
 
 
