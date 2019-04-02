@@ -24,9 +24,21 @@ export interface RepositoryModel {
     lastUpdatedBy?: string;
 }
 
-export const getModelCreator = <T>(collectionPrefix: string, schema: Schema): ModelCreator<T> => {
-    addFields(schema);
+declare type schemaCreator = (refNameCreator: (name: string) => string) => Schema;
+
+const getRefNameCreator = (headers: PolarisRequestHeaders) => (name: string) =>
+    getCollectionName(name, headers);
+
+export const getModelCreator = <T>(
+    collectionPrefix: string,
+    schemaOrCreator: Schema | schemaCreator,
+): ModelCreator<T> => {
     return ({ headers }: PolarisBaseContext) => {
+        const schema =
+            schemaOrCreator instanceof Function
+                ? schemaOrCreator(getRefNameCreator(headers))
+                : schemaOrCreator;
+        addFields(schema);
         headers = checkHeaders(headers);
         addQueryMiddleware(schema, headers);
         addDocumentMiddleware(schema, headers);

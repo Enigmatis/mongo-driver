@@ -25,7 +25,7 @@ describe('module creator', () => {
     let testHeaders: PolarisRequestHeaders;
     let context: PolarisBaseContext;
     let paths: any;
-    beforeAll(async () => {
+    beforeAll(() => {
         modelCreator = getModelCreator(testCollectionPrefix, personSchema);
         testHeaders = { realityId: testReality, upn: upnHeaderName };
         context = { headers: testHeaders };
@@ -34,6 +34,34 @@ describe('module creator', () => {
     });
 
     describe('creator function', () => {
+        describe('schema creator instead of schema', () => {
+            let modelCreatorFromSchemaCreator: ModelCreator<any>;
+            beforeAll(() => {
+                modelCreatorFromSchemaCreator = getModelCreator(
+                    testCollectionPrefix,
+                    refNameCreator =>
+                        new Schema({
+                            name: String,
+                            date: Date,
+                            cars: { type: Schema.Types.ObjectId, ref: refNameCreator('cars') },
+                        }),
+                );
+            });
+
+            test('creating schema with ref to dynamic collection name and passing it to addFields', () => {
+                const dynamicRealityId = 123;
+                const dynamicModel = modelCreatorFromSchemaCreator({
+                    headers: { realityId: dynamicRealityId },
+                });
+                const dynamicPaths = (dynamicModel.schema as any).paths;
+                expect(dynamicPaths).toHaveProperty('cars');
+                expect(dynamicPaths.cars.instance).toBe('ObjectID');
+                expect(dynamicPaths.cars.options.ref).toBe(
+                    MiddlewareFunctions.getCollectionName('cars', { realityId: dynamicRealityId }),
+                );
+            });
+        });
+
         test('mongoose collection name match standard format', () => {
             expect(model.collection.name).toBe(`${testCollectionPrefix}_reality-${testReality}`);
         });
