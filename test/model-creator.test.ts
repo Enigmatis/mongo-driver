@@ -66,8 +66,21 @@ describe('module creator', () => {
             expect(model.collection.name).toBe(`${testCollectionPrefix}_reality-${testReality}`);
         });
 
+        test('calling model creator twice return created model, not trowing error', () => {
+            const first = modelCreator(context);
+            const second = modelCreator(context);
+            expect(first).toBe(second);
+        });
+
         test('created model contains given schema', () => {
-            expect(model.schema).toBe(personSchema);
+            const resultPaths = (model.schema as any).paths;
+            const firstPaths = (personSchema as any).paths;
+            expect(resultPaths.name).toEqual(firstPaths.name);
+            expect(resultPaths.age).toEqual(firstPaths.age);
+        });
+
+        test('working with clone of the schema, not the schema itself', () => {
+            expect(model.schema).not.toBe(personSchema);
         });
 
         test('created model contains field createdBy of type string', () => {

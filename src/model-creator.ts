@@ -1,6 +1,6 @@
 import { PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
 import * as Joi from 'joi';
-import { Model, model, Schema } from 'mongoose';
+import { Model, model, models, Schema } from 'mongoose';
 import { getCollectionName } from './schema-helpers/middleware-functions';
 import {
     addDocumentMiddleware,
@@ -26,25 +26,40 @@ export interface RepositoryModel {
 
 declare type schemaCreator = (refNameCreator: (name: string) => string) => Schema;
 
-const getRefNameCreator = (headers: PolarisRequestHeaders) => (name: string) =>
-    getCollectionName(name, headers);
-
 export const getModelCreator = <T>(
     collectionPrefix: string,
     schemaOrCreator: Schema | schemaCreator,
 ): ModelCreator<T> => {
-    return ({ headers }: PolarisBaseContext) => {
-        const schema =
-            schemaOrCreator instanceof Function
-                ? schemaOrCreator(getRefNameCreator(headers))
-                : schemaOrCreator;
-        addFields(schema);
-        headers = checkHeaders(headers);
-        addQueryMiddleware(schema, headers);
-        addDocumentMiddleware(schema, headers);
-        addModelMiddleware(schema, headers);
-        return model<InnerModelType<T>>(getCollectionName(collectionPrefix, headers), schema);
+    return ({ headers }: PolarisBaseContext): Model<InnerModelType<T>> => {
+        const collectionName = getCollectionName(collectionPrefix, headers);
+        return (
+            models[collectionName] ||
+            model<InnerModelType<T>>(
+                collectionName,
+                createSchemaForModel(collectionPrefix, schemaOrCreator, headers),
+            )
+        );
     };
+};
+
+const getRefNameCreator = (headers: PolarisRequestHeaders) => (name: string) =>
+    getCollectionName(name, headers);
+
+const createSchemaForModel = <T>(
+    collectionPrefix: string,
+    schemaOrCreator: Schema | schemaCreator,
+    headers: PolarisRequestHeaders,
+) => {
+    const schema =
+        schemaOrCreator instanceof Function
+            ? schemaOrCreator(getRefNameCreator(headers))
+            : schemaOrCreator.clone();
+    headers = checkHeaders(headers);
+    addFields(schema);
+    addQueryMiddleware(schema, headers);
+    addDocumentMiddleware(schema, headers);
+    addModelMiddleware(schema, headers);
+    return schema;
 };
 
 const checkHeaders = (headers: PolarisRequestHeaders) => {
