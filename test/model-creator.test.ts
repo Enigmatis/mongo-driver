@@ -25,7 +25,7 @@ describe('module creator', () => {
     let testHeaders: PolarisRequestHeaders;
     let context: PolarisBaseContext;
     let paths: any;
-    beforeAll(async () => {
+    beforeAll(() => {
         modelCreator = getModelCreator(testCollectionPrefix, personSchema);
         testHeaders = { realityId: testReality, upn: upnHeaderName };
         context = { headers: testHeaders };
@@ -34,12 +34,53 @@ describe('module creator', () => {
     });
 
     describe('creator function', () => {
+        describe('schema creator instead of schema', () => {
+            let modelCreatorFromSchemaCreator: ModelCreator<any>;
+            beforeAll(() => {
+                modelCreatorFromSchemaCreator = getModelCreator(
+                    testCollectionPrefix,
+                    refNameCreator =>
+                        new Schema({
+                            name: String,
+                            date: Date,
+                            cars: { type: Schema.Types.ObjectId, ref: refNameCreator('cars') },
+                        }),
+                );
+            });
+
+            test('creating schema with ref to dynamic collection name and passing it to addFields', () => {
+                const dynamicRealityId = 123;
+                const dynamicModel = modelCreatorFromSchemaCreator({
+                    headers: { realityId: dynamicRealityId },
+                });
+                const dynamicPaths = (dynamicModel.schema as any).paths;
+                expect(dynamicPaths).toHaveProperty('cars');
+                expect(dynamicPaths.cars.instance).toBe('ObjectID');
+                expect(dynamicPaths.cars.options.ref).toBe(
+                    MiddlewareFunctions.getCollectionName('cars', { realityId: dynamicRealityId }),
+                );
+            });
+        });
+
         test('mongoose collection name match standard format', () => {
             expect(model.collection.name).toBe(`${testCollectionPrefix}_reality-${testReality}`);
         });
 
+        test('calling model creator twice return created model, not trowing error', () => {
+            const first = modelCreator(context);
+            const second = modelCreator(context);
+            expect(first).toBe(second);
+        });
+
         test('created model contains given schema', () => {
-            expect(model.schema).toBe(personSchema);
+            const resultPaths = (model.schema as any).paths;
+            const firstPaths = (personSchema as any).paths;
+            expect(resultPaths.name).toEqual(firstPaths.name);
+            expect(resultPaths.age).toEqual(firstPaths.age);
+        });
+
+        test('working with clone of the schema, not the schema itself', () => {
+            expect(model.schema).not.toBe(personSchema);
         });
 
         test('created model contains field createdBy of type string', () => {
