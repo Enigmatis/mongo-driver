@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/Enigmatis/mongo-driver/compare/v1.8.0...v1.8.1) (2019-04-03)
+
+
+### Bug Fixes
+
+* **schema creator:** export schema creator type ([9b37840](https://github.com/Enigmatis/mongo-driver/commit/9b37840))
+
 # [1.8.0](https://github.com/Enigmatis/mongo-driver/compare/v1.7.0...v1.8.0) (2019-04-03)
 
 
