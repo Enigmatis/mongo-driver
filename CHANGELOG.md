@@ -1,3 +1,15 @@
+# [1.8.0](https://github.com/Enigmatis/mongo-driver/compare/v1.7.0...v1.8.0) (2019-04-03)
+
+
+### Bug Fixes
+
+* **model-creator:** mongoose coleection already difunded error ([0b9733f](https://github.com/Enigmatis/mongo-driver/commit/0b9733f))
+
+
+### Features
+
+* **schema-ref:** support schema generator instead of schema ([304c96d](https://github.com/Enigmatis/mongo-driver/commit/304c96d))
+
 # [1.7.0](https://github.com/Enigmatis/mongo-driver/compare/v1.6.1...v1.7.0) (2019-04-02)
 
 
