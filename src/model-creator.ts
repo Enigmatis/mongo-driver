@@ -24,11 +24,11 @@ export interface RepositoryModel {
     lastUpdatedBy?: string;
 }
 
-declare type schemaCreator = (refNameCreator: (name: string) => string) => Schema;
+export declare type SchemaCreator = (refNameCreator: (name: string) => string) => Schema;
 
 export const getModelCreator = <T>(
     collectionPrefix: string,
-    schemaOrCreator: Schema | schemaCreator,
+    schemaOrCreator: Schema | SchemaCreator,
 ): ModelCreator<T> => {
     return ({ headers }: PolarisBaseContext): Model<InnerModelType<T>> => {
         const collectionName = getCollectionName(collectionPrefix, headers);
@@ -47,7 +47,7 @@ const getRefNameCreator = (headers: PolarisRequestHeaders) => (name: string) =>
 
 const createSchemaForModel = <T>(
     collectionPrefix: string,
-    schemaOrCreator: Schema | schemaCreator,
+    schemaOrCreator: Schema | SchemaCreator,
     headers: PolarisRequestHeaders,
 ) => {
     const schema =
