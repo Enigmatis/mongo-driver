@@ -76,11 +76,13 @@ const subscribeToEvents = (
         logger.warn('MongoDB reconnected!');
     });
     db.on('disconnected', async () => {
-        logger.error('MongoDB disconnected!');
         if (!wantToDisconnect) {
+            logger.error('MongoDB disconnected!');
             setTimeout(async () => {
                 await connect(options.connectionString);
             }, options.waitUntilReconnectInMs || 5000);
+        } else {
+            logger.info('MongoDB disconnected!');
         }
     });
     isSubscribed = true;
