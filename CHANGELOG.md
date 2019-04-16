@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/Enigmatis/mongo-driver/compare/v1.8.1...v1.8.2) (2019-04-16)
+
+
+### Bug Fixes
+
+* **disconnect:** log at info level if user want to disconnect ([d88fb1b](https://github.com/Enigmatis/mongo-driver/commit/d88fb1b))
+
 ## [1.8.1](https://github.com/Enigmatis/mongo-driver/compare/v1.8.0...v1.8.1) (2019-04-03)
 
 
