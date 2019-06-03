@@ -1,5 +1,6 @@
 import { PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
-import { Document, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
+import { ModelConfiguration } from '../src/model-config';
 import { getModelCreator } from '../src/model-creator';
 import { deleted, notDeleted } from '../src/schema-helpers/constants';
 import * as MiddlewareFunctions from '../src/schema-helpers/middleware-functions';
@@ -24,9 +25,13 @@ describe('module creator', () => {
     let model: ModelType<Person>;
     let testHeaders: PolarisRequestHeaders;
     let context: PolarisBaseContext;
+    const modelConfig: ModelConfiguration = {
+        allowSoftDelete: true,
+        softDeleteReturnEntities: false,
+    };
     let paths: any;
     beforeAll(() => {
-        modelCreator = getModelCreator(testCollectionPrefix, personSchema);
+        modelCreator = getModelCreator(testCollectionPrefix, personSchema, modelConfig);
         testHeaders = { realityId: testReality, upn: upnHeaderName };
         context = { headers: testHeaders };
         model = modelCreator(context);
@@ -45,6 +50,7 @@ describe('module creator', () => {
                             date: Date,
                             cars: { type: Schema.Types.ObjectId, ref: refNameCreator('cars') },
                         }),
+                    modelConfig,
                 );
             });
 
