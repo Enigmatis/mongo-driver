@@ -1,3 +1,10 @@
+## [1.8.3](https://github.com/Enigmatis/mongo-driver/compare/v1.8.2...v1.8.3) (2019-06-03)
+
+
+### Bug Fixes
+
+* query deleted irrelevant entities too ([e083b5b](https://github.com/Enigmatis/mongo-driver/commit/e083b5b))
+
 ## [1.8.2](https://github.com/Enigmatis/mongo-driver/compare/v1.8.1...v1.8.2) (2019-04-16)
 
 
