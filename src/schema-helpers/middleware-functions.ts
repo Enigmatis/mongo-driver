@@ -58,7 +58,7 @@ export const getFindHandler = (
     };
 };
 
-export function softRemoveFunc<T>(
+export function softRemove<T>(
     this: Model<any>,
     query: any,
     optionsOrCallback: any,
@@ -79,13 +79,13 @@ export function softRemoveFunc<T>(
     }
 }
 
-export function singleSoftRemove(
+export function softRemoveOne(
     this: Model<any>,
     query: any,
     callback?: (err: any, raw: any) => void,
 ) {
     // using thisModule to be abale to mock softRemoveFunc in tests
-    return thisModule.softRemoveFunc.call(this, query, { single: true }, callback);
+    return thisModule.softRemove.call(this, query, { single: true }, callback);
 }
 
 export function findOneAndSoftDelete(

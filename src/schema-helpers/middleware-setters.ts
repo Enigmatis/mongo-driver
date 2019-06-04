@@ -7,8 +7,8 @@ import {
     getPreInsertMany,
     getPreSave,
     preAggregate,
-    singleSoftRemove,
-    softRemoveFunc,
+    softRemove,
+    softRemoveOne,
 } from './middleware-functions';
 
 export const addQueryMiddleware = (
@@ -29,9 +29,9 @@ export const addQueryMiddleware = (
     ) {
         schema.statics = {
             ...schema.statics,
-            remove: softRemoveFunc,
-            deleteOne: singleSoftRemove,
-            deleteMany: softRemoveFunc,
+            remove: softRemove,
+            deleteOne: softRemoveOne,
+            deleteMany: softRemove,
             findOneAndDelete: findOneAndSoftDelete,
             findOneAndRemove: findOneAndSoftDelete,
         };
