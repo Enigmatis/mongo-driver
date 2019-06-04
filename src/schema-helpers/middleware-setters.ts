@@ -1,31 +1,41 @@
 import { PolarisRequestHeaders } from '@enigmatis/utills';
-import { Aggregate, HookNextFunction, Model, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
+import { ModelConfiguration } from '../model-config';
 import {
     findOneAndSoftDelete,
     getFindHandler,
     getPreInsertMany,
     getPreSave,
     preAggregate,
-    singleSoftRemove,
-    softRemoveFunc,
+    softRemove,
+    softRemoveOne,
 } from './middleware-functions';
 
-export const addQueryMiddleware = (schema: Schema, headers: PolarisRequestHeaders) => {
-    const findHandlerFunc = getFindHandler(headers);
+export const addQueryMiddleware = (
+    schema: Schema,
+    headers: PolarisRequestHeaders,
+    modelConfiguration?: ModelConfiguration,
+) => {
+    const findHandlerFunc = getFindHandler(headers, modelConfiguration);
     ['find', 'findOne', 'findOneAndUpdate', 'update', 'count', 'updateOne', 'updateMany'].forEach(
         middleware => {
             schema.pre(middleware, findHandlerFunc as any);
         },
     );
     schema.pre('aggregate', preAggregate);
-    schema.statics = {
-        ...schema.statics,
-        remove: softRemoveFunc,
-        deleteOne: singleSoftRemove,
-        deleteMany: softRemoveFunc,
-        findOneAndDelete: findOneAndSoftDelete,
-        findOneAndRemove: findOneAndSoftDelete,
-    };
+    if (
+        !modelConfiguration ||
+        (modelConfiguration && modelConfiguration.allowSoftDelete !== false)
+    ) {
+        schema.statics = {
+            ...schema.statics,
+            remove: softRemove,
+            deleteOne: softRemoveOne,
+            deleteMany: softRemove,
+            findOneAndDelete: findOneAndSoftDelete,
+            findOneAndRemove: findOneAndSoftDelete,
+        };
+    }
 };
 
 export const addModelMiddleware = (schema: Schema, headers: PolarisRequestHeaders) => {

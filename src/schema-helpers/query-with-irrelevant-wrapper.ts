@@ -1,6 +1,6 @@
-import {QueryIrrelevantResult} from '@enigmatis/utills';
-import {Model} from 'mongoose';
-import {InnerModelType} from '../types';
+import { QueryIrrelevantResult } from '@enigmatis/utills';
+import { Model } from 'mongoose';
+import { InnerModelType } from '../types';
 
 export const QueryWithIrrelevant = async (
     model: Model<InnerModelType<any>>,
@@ -12,11 +12,11 @@ export const QueryWithIrrelevant = async (
     }
     const irrelevant = await model.find(
         {
-            _id: {$nin: result.map(x => x._id)},
-            dataVersion: {$gt: dataVersion},
-            deleted: {$in: [true, false]}
+            _id: { $nin: result.map(x => x._id) },
+            dataVersion: { $gt: dataVersion },
+            deleted: { $in: [true, false] },
         },
-        {_id: true},
+        { _id: true },
     );
 
     return new QueryIrrelevantResult(result, irrelevant.map(x => x._id));
