@@ -14,16 +14,19 @@ import {
 export const addQueryMiddleware = (
     schema: Schema,
     headers: PolarisRequestHeaders,
-    modelConfiguration: ModelConfiguration,
+    modelConfiguration?: ModelConfiguration,
 ) => {
-    const findHandlerFunc = getFindHandler(headers);
+    const findHandlerFunc = getFindHandler(headers, modelConfiguration);
     ['find', 'findOne', 'findOneAndUpdate', 'update', 'count', 'updateOne', 'updateMany'].forEach(
         middleware => {
             schema.pre(middleware, findHandlerFunc as any);
         },
     );
     schema.pre('aggregate', preAggregate);
-    if (modelConfiguration.allowSoftDelete) {
+    if (
+        !modelConfiguration ||
+        (modelConfiguration && modelConfiguration.allowSoftDelete !== false)
+    ) {
         schema.statics = {
             ...schema.statics,
             remove: softRemoveFunc,

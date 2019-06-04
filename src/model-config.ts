@@ -1,4 +1,4 @@
 export interface ModelConfiguration {
-    allowSoftDelete: boolean;
-    softDeleteReturnEntities: boolean;
+    allowSoftDelete?: boolean;
+    softDeleteReturnEntities?: boolean;
 }

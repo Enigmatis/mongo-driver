@@ -25,13 +25,9 @@ describe('module creator', () => {
     let model: ModelType<Person>;
     let testHeaders: PolarisRequestHeaders;
     let context: PolarisBaseContext;
-    const modelConfig: ModelConfiguration = {
-        allowSoftDelete: true,
-        softDeleteReturnEntities: false,
-    };
     let paths: any;
     beforeAll(() => {
-        modelCreator = getModelCreator(testCollectionPrefix, personSchema, modelConfig);
+        modelCreator = getModelCreator(testCollectionPrefix, personSchema);
         testHeaders = { realityId: testReality, upn: upnHeaderName };
         context = { headers: testHeaders };
         model = modelCreator(context);
@@ -50,7 +46,6 @@ describe('module creator', () => {
                             date: Date,
                             cars: { type: Schema.Types.ObjectId, ref: refNameCreator('cars') },
                         }),
-                    modelConfig,
                 );
             });
 
@@ -161,6 +156,24 @@ describe('module creator', () => {
             expect(model.findOneAndDelete).toBe(MiddlewareFunctions.findOneAndSoftDelete);
             expect(model.findOneAndRemove).toBe(MiddlewareFunctions.findOneAndSoftDelete);
         });
+        test('soft delete not allowed', () => {
+            const softDeleteNotAllowedModelConfig: ModelConfiguration = {
+                allowSoftDelete: false,
+            };
+            const modelCreator2 = getModelCreator(
+                'testing2',
+                personSchema,
+                softDeleteNotAllowedModelConfig,
+            );
+            const model2 = modelCreator2(context);
+            expect(model2.schema.statics).not.toEqual({
+                deleteMany: MiddlewareFunctions.softRemoveFunc,
+                deleteOne: MiddlewareFunctions.singleSoftRemove,
+                findOneAndDelete: MiddlewareFunctions.findOneAndSoftDelete,
+                findOneAndRemove: MiddlewareFunctions.findOneAndSoftDelete,
+                remove: MiddlewareFunctions.softRemoveFunc,
+            });
+        });
 
         test("model middleware's added", () => {
             const preMiddlewareMap = (model as any).hooks._pres;
@@ -178,6 +191,28 @@ describe('module creator', () => {
     });
 
     describe("middleware's functions", () => {
+        test('findHandlerFunc - soft delete return entities true', () => {
+            const softDeleteReturnEntitiesModelConfig: ModelConfiguration = {
+                softDeleteReturnEntities: true,
+            };
+            const modelCreator2 = getModelCreator(
+                'testing2',
+                personSchema,
+                softDeleteReturnEntitiesModelConfig,
+            );
+            const model2 = modelCreator2(context);
+            const where = jest.fn();
+            const conditions = { name: 'Dazdraperma' };
+            const headers = { realityId: testReality };
+            const findHandler = MiddlewareFunctions.getFindHandler(
+                headers,
+                softDeleteReturnEntitiesModelConfig,
+            );
+            findHandler.call({ where, _conditions: conditions });
+            expect(where).toHaveBeenCalledTimes(1);
+            expect(where).toHaveBeenCalledWith(expect.not.objectContaining(notDeleted));
+        });
+
         test('findHandlerFunc - add not deleted options to query', () => {
             const where = jest.fn();
             const conditions = { name: 'Dazdraperma' };

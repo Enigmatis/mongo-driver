@@ -30,7 +30,7 @@ export declare type SchemaCreator = (refNameCreator: (name: string) => string) =
 export const getModelCreator = <T>(
     collectionPrefix: string,
     schemaOrCreator: Schema | SchemaCreator,
-    modelConfiguration: ModelConfiguration,
+    modelConfiguration?: ModelConfiguration,
 ): ModelCreator<T> => {
     return ({ headers }: PolarisBaseContext): Model<InnerModelType<T>> => {
         const collectionName = getCollectionName(collectionPrefix, headers);
@@ -56,7 +56,7 @@ const createSchemaForModel = <T>(
     collectionPrefix: string,
     schemaOrCreator: Schema | SchemaCreator,
     headers: PolarisRequestHeaders,
-    modelConfiguration: ModelConfiguration,
+    modelConfiguration?: ModelConfiguration,
 ) => {
     const schema =
         schemaOrCreator instanceof Function
