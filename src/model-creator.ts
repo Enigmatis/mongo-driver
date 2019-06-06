@@ -1,7 +1,6 @@
-import { PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
+import { MongoConfiguration, PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
 import * as Joi from 'joi';
 import { Model, model, models, Schema } from 'mongoose';
-import { ModelConfiguration } from './model-config';
 import { getCollectionName } from './schema-helpers/middleware-functions';
 import {
     addDocumentMiddleware,
@@ -30,9 +29,8 @@ export declare type SchemaCreator = (refNameCreator: (name: string) => string) =
 export const getModelCreator = <T>(
     collectionPrefix: string,
     schemaOrCreator: Schema | SchemaCreator,
-    modelConfiguration?: ModelConfiguration,
 ): ModelCreator<T> => {
-    return ({ headers }: PolarisBaseContext): Model<InnerModelType<T>> => {
+    return ({ headers, mongoConfiguration }: PolarisBaseContext): Model<InnerModelType<T>> => {
         const collectionName = getCollectionName(collectionPrefix, headers);
         return (
             models[collectionName] ||
@@ -42,7 +40,7 @@ export const getModelCreator = <T>(
                     collectionPrefix,
                     schemaOrCreator,
                     headers,
-                    modelConfiguration,
+                    mongoConfiguration,
                 ),
             )
         );
@@ -56,7 +54,7 @@ const createSchemaForModel = <T>(
     collectionPrefix: string,
     schemaOrCreator: Schema | SchemaCreator,
     headers: PolarisRequestHeaders,
-    modelConfiguration?: ModelConfiguration,
+    mongoConfiguration?: MongoConfiguration,
 ) => {
     const schema =
         schemaOrCreator instanceof Function
@@ -64,7 +62,7 @@ const createSchemaForModel = <T>(
             : schemaOrCreator.clone();
     headers = checkHeaders(headers);
     addFields(schema);
-    addQueryMiddleware(schema, headers, modelConfiguration);
+    addQueryMiddleware(schema, headers, mongoConfiguration);
     addDocumentMiddleware(schema, headers);
     addModelMiddleware(schema, headers);
     return schema;

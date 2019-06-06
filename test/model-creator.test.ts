@@ -160,11 +160,8 @@ describe('module creator', () => {
             const softDeleteNotAllowedModelConfig: ModelConfiguration = {
                 allowSoftDelete: false,
             };
-            const modelCreator2 = getModelCreator(
-                'testing2',
-                personSchema,
-                softDeleteNotAllowedModelConfig,
-            );
+            context.mongoConfiguration = softDeleteNotAllowedModelConfig;
+            const modelCreator2 = getModelCreator('testing2', personSchema);
             const model2 = modelCreator2(context);
             expect(model2.schema.statics).not.toEqual({
                 deleteMany: MiddlewareFunctions.softRemove,
@@ -195,11 +192,8 @@ describe('module creator', () => {
             const softDeleteReturnEntitiesModelConfig: ModelConfiguration = {
                 softDeleteReturnEntities: true,
             };
-            const modelCreator2 = getModelCreator(
-                'testing2',
-                personSchema,
-                softDeleteReturnEntitiesModelConfig,
-            );
+            context.mongoConfiguration = softDeleteReturnEntitiesModelConfig;
+            const modelCreator2 = getModelCreator('testing2', personSchema);
             const model2 = modelCreator2(context);
             const where = jest.fn();
             const conditions = { name: 'Dazdraperma' };

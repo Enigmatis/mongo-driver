@@ -1,6 +1,5 @@
-import { PolarisRequestHeaders } from '@enigmatis/utills';
+import { MongoConfiguration, PolarisRequestHeaders } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
-import { ModelConfiguration } from '../model-config';
 import { RepositoryModel } from '../model-creator';
 import { InnerModelType } from '../types';
 import { deleted, notDeleted } from './constants';
@@ -36,11 +35,11 @@ export const getPreInsertMany = (headers: PolarisRequestHeaders) => {
 
 export const getFindHandler = (
     headers: PolarisRequestHeaders,
-    modelConfig?: ModelConfiguration,
+    mongoConfiguration?: MongoConfiguration,
 ) => {
     return function findHandler(this: any) {
         const conditions = this._conditions;
-        if (modelConfig && modelConfig.softDeleteReturnEntities) {
+        if (mongoConfiguration && mongoConfiguration.softDeleteReturnEntities) {
             conditions.deleted = true;
         }
         const realityId =
