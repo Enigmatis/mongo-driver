@@ -43,7 +43,7 @@ export const getFindHandler = (
             conditions.deleted =
                 mongoConfiguration && mongoConfiguration.softDeleteReturnEntities
                     ? { $in: [true, false] }
-                    : notDeleted;
+                    : notDeleted.deleted;
         }
         const realityId =
             headers.realityId !== undefined &&
