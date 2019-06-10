@@ -1,2 +1,2 @@
-export const deleted = { deleted: { $in: [true, false] } };
+export const deleted = { deleted: true };
 export const notDeleted = { deleted: { $ne: true } };
