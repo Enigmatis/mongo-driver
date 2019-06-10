@@ -47,9 +47,7 @@ export const getFindHandler = (
                 : { realityId: headers.realityId });
         const deletedCondition =
             !conditions.deleted &&
-            (mongoConfiguration && mongoConfiguration.softDeleteReturnEntities
-                ? deleted
-                : notDeleted);
+            (!(mongoConfiguration && mongoConfiguration.softDeleteReturnEntities) && notDeleted);
         this.where({
             ...realityId,
             ...deletedCondition,
