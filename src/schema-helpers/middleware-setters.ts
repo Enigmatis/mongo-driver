@@ -21,6 +21,7 @@ export const addQueryMiddleware = (
             schema.pre(middleware, findHandlerFunc as any);
         },
     );
+    schema.pre('aggregate', preAggregate);
     if (
         !mongoConfiguration ||
         (mongoConfiguration && mongoConfiguration.allowSoftDelete !== false)
