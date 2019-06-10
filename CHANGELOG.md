@@ -1,3 +1,12 @@
+## [1.8.7](https://github.com/Enigmatis/mongo-driver/compare/v1.8.6...v1.8.7) (2019-06-10)
+
+
+### Bug Fixes
+
+* aggregate condition ([2a2d642](https://github.com/Enigmatis/mongo-driver/commit/2a2d642))
+* conditions ([5ea1385](https://github.com/Enigmatis/mongo-driver/commit/5ea1385))
+* conditions ([a2d799a](https://github.com/Enigmatis/mongo-driver/commit/a2d799a))
+
 ## [1.8.6](https://github.com/Enigmatis/mongo-driver/compare/v1.8.5...v1.8.6) (2019-06-10)
 
 
