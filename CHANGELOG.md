@@ -1,3 +1,10 @@
+## [1.8.6](https://github.com/Enigmatis/mongo-driver/compare/v1.8.5...v1.8.6) (2019-06-10)
+
+
+### Bug Fixes
+
+* move mongo configuration to basecontext ([042749e](https://github.com/Enigmatis/mongo-driver/commit/042749e))
+
 ## [1.8.5](https://github.com/Enigmatis/mongo-driver/compare/v1.8.4...v1.8.5) (2019-06-05)
 
 
