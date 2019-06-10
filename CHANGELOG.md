@@ -1,3 +1,10 @@
+## [1.8.11](https://github.com/Enigmatis/mongo-driver/compare/v1.8.10...v1.8.11) (2019-06-10)
+
+
+### Bug Fixes
+
+* conditions ([ec89bb0](https://github.com/Enigmatis/mongo-driver/commit/ec89bb0))
+
 ## [1.8.10](https://github.com/Enigmatis/mongo-driver/compare/v1.8.9...v1.8.10) (2019-06-10)
 
 
