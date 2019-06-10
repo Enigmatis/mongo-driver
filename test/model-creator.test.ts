@@ -1,6 +1,5 @@
-import { PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
+import { MongoConfiguration, PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
 import { Schema } from 'mongoose';
-import { ModelConfiguration } from '../src/model-config';
 import { getModelCreator } from '../src/model-creator';
 import { deleted, notDeleted } from '../src/schema-helpers/constants';
 import * as MiddlewareFunctions from '../src/schema-helpers/middleware-functions';
@@ -157,10 +156,10 @@ describe('module creator', () => {
             expect(model.findOneAndRemove).toBe(MiddlewareFunctions.findOneAndSoftDelete);
         });
         test('soft delete not allowed', () => {
-            const softDeleteNotAllowedModelConfig: ModelConfiguration = {
+            const softDeleteNotAllowedMongoConfig: MongoConfiguration = {
                 allowSoftDelete: false,
             };
-            context.mongoConfiguration = softDeleteNotAllowedModelConfig;
+            context.mongoConfiguration = softDeleteNotAllowedMongoConfig;
             const modelCreator2 = getModelCreator('testing2', personSchema);
             const model2 = modelCreator2(context);
             expect(model2.schema.statics).not.toEqual({
@@ -189,10 +188,10 @@ describe('module creator', () => {
 
     describe("middleware's functions", () => {
         test('findHandlerFunc - soft delete return entities true', () => {
-            const softDeleteReturnEntitiesModelConfig: ModelConfiguration = {
+            const softDeleteReturnEntitiesMongoConfig: MongoConfiguration = {
                 softDeleteReturnEntities: true,
             };
-            context.mongoConfiguration = softDeleteReturnEntitiesModelConfig;
+            context.mongoConfiguration = softDeleteReturnEntitiesMongoConfig;
             const modelCreator2 = getModelCreator('testing2', personSchema);
             const model2 = modelCreator2(context);
             const where = jest.fn();
@@ -200,13 +199,12 @@ describe('module creator', () => {
             const headers = { realityId: testReality };
             const findHandler = MiddlewareFunctions.getFindHandler(
                 headers,
-                softDeleteReturnEntitiesModelConfig,
+                softDeleteReturnEntitiesMongoConfig,
             );
             findHandler.call({ where, _conditions: conditions });
             expect(where).toHaveBeenCalledTimes(1);
             expect(where).toHaveBeenCalledWith(expect.not.objectContaining(notDeleted));
         });
-
         test('findHandlerFunc - add not deleted options to query', () => {
             const where = jest.fn();
             const conditions = { name: 'Dazdraperma' };
