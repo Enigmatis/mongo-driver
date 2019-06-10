@@ -39,8 +39,11 @@ export const getFindHandler = (
 ) => {
     return function findHandler(this: any) {
         const conditions = this._conditions;
-        if (mongoConfiguration && mongoConfiguration.softDeleteReturnEntities) {
-            conditions.deleted = { $in: [true, false] };
+        if (!conditions.deleted) {
+            conditions.deleted =
+                mongoConfiguration && mongoConfiguration.softDeleteReturnEntities
+                    ? { $in: [true, false] }
+                    : notDeleted;
         }
         const realityId =
             headers.realityId !== undefined &&
@@ -50,7 +53,7 @@ export const getFindHandler = (
                 : { realityId: headers.realityId });
         this.where({
             ...realityId,
-            ...(!conditions.deleted && notDeleted),
+            ...conditions.deleted,
             ...(headers.dataVersion &&
                 !conditions.dataVersion && { dataVersion: { $gt: headers.dataVersion } }),
         });
