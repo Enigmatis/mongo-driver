@@ -1,6 +1,5 @@
-import { PolarisRequestHeaders } from '@enigmatis/utills';
+import { MongoConfiguration, PolarisRequestHeaders } from '@enigmatis/utills';
 import { Schema } from 'mongoose';
-import { ModelConfiguration } from '../model-config';
 import {
     findOneAndSoftDelete,
     getFindHandler,
@@ -14,9 +13,9 @@ import {
 export const addQueryMiddleware = (
     schema: Schema,
     headers: PolarisRequestHeaders,
-    modelConfiguration?: ModelConfiguration,
+    mongoConfiguration?: MongoConfiguration,
 ) => {
-    const findHandlerFunc = getFindHandler(headers, modelConfiguration);
+    const findHandlerFunc = getFindHandler(headers, mongoConfiguration);
     ['find', 'findOne', 'findOneAndUpdate', 'update', 'count', 'updateOne', 'updateMany'].forEach(
         middleware => {
             schema.pre(middleware, findHandlerFunc as any);
@@ -24,8 +23,8 @@ export const addQueryMiddleware = (
     );
     schema.pre('aggregate', preAggregate);
     if (
-        !modelConfiguration ||
-        (modelConfiguration && modelConfiguration.allowSoftDelete !== false)
+        !mongoConfiguration ||
+        (mongoConfiguration && mongoConfiguration.allowSoftDelete !== false)
     ) {
         schema.statics = {
             ...schema.statics,
