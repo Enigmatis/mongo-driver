@@ -23,6 +23,7 @@ export interface RepositoryModel {
     realityId: number;
     createdBy?: string;
     lastUpdatedBy?: string;
+    dataVersion: number;
 }
 
 export declare type SchemaCreator = (refNameCreator: (name: string) => string) => Schema;

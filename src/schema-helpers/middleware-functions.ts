@@ -1,5 +1,6 @@
 import { PolarisRequestHeaders } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
+import { DataVersionModel } from '../data-version/data-version-model';
 import { ModelConfiguration } from '../model-config';
 import { RepositoryModel } from '../model-creator';
 import { InnerModelType } from '../types';
@@ -8,24 +9,31 @@ import * as thisModule from './middleware-functions';
 
 export const addDynamicPropertiesToDocument = <T extends RepositoryModel>(
     document: T,
-    { realityId, upn }: PolarisRequestHeaders,
+    { realityId, upn, dataVersion }: PolarisRequestHeaders,
 ) => {
     document.lastUpdateDate = new Date();
     document.realityId = realityId!;
     document.createdBy = document.createdBy || upn;
     document.lastUpdatedBy = upn;
+    document.dataVersion = dataVersion || document.dataVersion;
 };
 
 export const getPreSave = (headers: PolarisRequestHeaders) => {
-    return function preSaveFunc(this: InnerModelType<any>, next: () => void) {
+    return async function preSaveFunc(this: InnerModelType<any>, next: () => void) {
+        const currentDataVersion = await DataVersionModel.findOneAndUpdate(
+            {},
+            { $inc: { dataVersion: 1 } },
+            { new: true, upsert: true },
+        );
         // using thisModule to be abale to mock softRemoveFunc in tests
+        headers.dataVersion = currentDataVersion.dataVersion;
         thisModule.addDynamicPropertiesToDocument(this, headers);
         next();
     };
 };
 
 export const getPreInsertMany = (headers: PolarisRequestHeaders) => {
-    return function preInsertMany(this: Model<any>, next: HookNextFunction, docs: any[]) {
+    return async function preInsertMany(this: Model<any>, next: HookNextFunction, docs: any[]) {
         docs.forEach(doc => {
             // using thisModule to be abale to mock softRemoveFunc in tests
             thisModule.addDynamicPropertiesToDocument(doc, headers);
