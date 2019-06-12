@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/Enigmatis/mongo-driver#readme",
   "dependencies": {
-    "@enigmatis/utills": "^1.3.1",
+    "@enigmatis/utills": "^1.3.3",
     "@types/joi": "^14.3.2",
     "@types/mongoose": "^5.3.12",
     "@types/node": "10.12.12",
@@ -62,7 +62,7 @@
     "jest": "^24.1.0",
     "prettier": "^1.16.1",
     "rimraf": "^2.6.3",
-    "semantic-release": "^15.13.3",
+    "semantic-release": "^15.13.15",
     "shx": "^0.3.2",
     "travis-deploy-once": "^5.0.11",
     "ts-jest": "^24.0.0",

@@ -1,4 +1,4 @@
-import { DbConnection, GraphqlLogger } from '@enigmatis/utills';
+import { GraphqlLogger } from '@enigmatis/utills';
 import * as mongoose from 'mongoose';
 
 export declare type MongooseDebugFunction = (

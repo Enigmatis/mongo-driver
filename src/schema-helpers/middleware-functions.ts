@@ -1,4 +1,4 @@
-import { PolarisRequestHeaders } from '@enigmatis/utills';
+import { PolarisRequestHeaders, SoftDeleteConfiguration } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
 import { RepositoryModel } from '../model-creator';
 import { InnerModelType } from '../types';
@@ -33,7 +33,10 @@ export const getPreInsertMany = (headers: PolarisRequestHeaders) => {
     };
 };
 
-export const getFindHandler = (headers: PolarisRequestHeaders) => {
+export const getFindHandler = (
+    headers: PolarisRequestHeaders,
+    softDeleteConfiguration?: SoftDeleteConfiguration,
+) => {
     return function findHandler(this: any) {
         const conditions = this._conditions;
         const realityId =
@@ -42,16 +45,20 @@ export const getFindHandler = (headers: PolarisRequestHeaders) => {
             (headers.includeLinkedOperation
                 ? { realityId: { $or: [headers.realityId, 0] } }
                 : { realityId: headers.realityId });
+        const deletedCondition =
+            !conditions.deleted &&
+            (!(softDeleteConfiguration && softDeleteConfiguration.softDeleteReturnEntities) &&
+                notDeleted);
         this.where({
             ...realityId,
-            ...(!conditions.deleted && notDeleted),
+            ...deletedCondition,
             ...(headers.dataVersion &&
                 !conditions.dataVersion && { dataVersion: { $gt: headers.dataVersion } }),
         });
     };
 };
 
-export function softRemoveFunc<T>(
+export function softRemove<T>(
     this: Model<any>,
     query: any,
     optionsOrCallback: any,
@@ -72,13 +79,13 @@ export function softRemoveFunc<T>(
     }
 }
 
-export function singleSoftRemove(
+export function softRemoveOne(
     this: Model<any>,
     query: any,
     callback?: (err: any, raw: any) => void,
 ) {
     // using thisModule to be abale to mock softRemoveFunc in tests
-    return thisModule.softRemoveFunc.call(this, query, { single: true }, callback);
+    return thisModule.softRemove.call(this, query, { single: true }, callback);
 }
 
 export function findOneAndSoftDelete(

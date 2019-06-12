@@ -1,6 +1,9 @@
-import { PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
+import {
+    PolarisBaseContext,
+    PolarisRequestHeaders,
+    SoftDeleteConfiguration,
+} from '@enigmatis/utills';
 import { Schema } from 'mongoose';
-import { ModelConfiguration } from '../src/model-config';
 import { getModelCreator } from '../src/model-creator';
 import { deleted, notDeleted } from '../src/schema-helpers/constants';
 import * as MiddlewareFunctions from '../src/schema-helpers/middleware-functions';
@@ -25,13 +28,9 @@ describe('module creator', () => {
     let model: ModelType<Person>;
     let testHeaders: PolarisRequestHeaders;
     let context: PolarisBaseContext;
-    const modelConfig: ModelConfiguration = {
-        allowSoftDelete: true,
-        softDeleteReturnEntities: false,
-    };
     let paths: any;
     beforeAll(() => {
-        modelCreator = getModelCreator(testCollectionPrefix, personSchema, modelConfig);
+        modelCreator = getModelCreator(testCollectionPrefix, personSchema);
         testHeaders = { realityId: testReality, upn: upnHeaderName };
         context = { headers: testHeaders };
         model = modelCreator(context);
@@ -50,7 +49,6 @@ describe('module creator', () => {
                             date: Date,
                             cars: { type: Schema.Types.ObjectId, ref: refNameCreator('cars') },
                         }),
-                    modelConfig,
                 );
             });
 
@@ -155,11 +153,26 @@ describe('module creator', () => {
             expect(preMiddlewareMap.get('aggregate').map((x: any) => x.fn)).toContain(
                 MiddlewareFunctions.preAggregate,
             );
-            expect(model.remove).toBe(MiddlewareFunctions.softRemoveFunc);
-            expect(model.deleteOne).toBe(MiddlewareFunctions.singleSoftRemove);
-            expect(model.deleteMany).toBe(MiddlewareFunctions.softRemoveFunc);
+            expect(model.remove).toBe(MiddlewareFunctions.softRemove);
+            expect(model.deleteOne).toBe(MiddlewareFunctions.softRemoveOne);
+            expect(model.deleteMany).toBe(MiddlewareFunctions.softRemove);
             expect(model.findOneAndDelete).toBe(MiddlewareFunctions.findOneAndSoftDelete);
             expect(model.findOneAndRemove).toBe(MiddlewareFunctions.findOneAndSoftDelete);
+        });
+        test('soft delete not allowed', () => {
+            const softDeleteNotAllowed: SoftDeleteConfiguration = {
+                allowSoftDelete: false,
+            };
+            context.softDeleteConfiguration = softDeleteNotAllowed;
+            const modelCreator2 = getModelCreator('testing2', personSchema);
+            const model2 = modelCreator2(context);
+            expect(model2.schema.statics).not.toEqual({
+                deleteMany: MiddlewareFunctions.softRemove,
+                deleteOne: MiddlewareFunctions.softRemoveOne,
+                findOneAndDelete: MiddlewareFunctions.findOneAndSoftDelete,
+                findOneAndRemove: MiddlewareFunctions.findOneAndSoftDelete,
+                remove: MiddlewareFunctions.softRemove,
+            });
         });
 
         test("model middleware's added", () => {
@@ -178,6 +191,24 @@ describe('module creator', () => {
     });
 
     describe("middleware's functions", () => {
+        test('findHandlerFunc - soft delete return entities true', () => {
+            const softDeleteReturnEntities: SoftDeleteConfiguration = {
+                softDeleteReturnEntities: true,
+            };
+            context.softDeleteConfiguration = softDeleteReturnEntities;
+            const modelCreator2 = getModelCreator('testing2', personSchema);
+            const model2 = modelCreator2(context);
+            const where = jest.fn();
+            const conditions = { name: 'Dazdraperma' };
+            const headers = { realityId: testReality };
+            const findHandler = MiddlewareFunctions.getFindHandler(
+                headers,
+                softDeleteReturnEntities,
+            );
+            findHandler.call({ where, _conditions: conditions });
+            expect(where).toHaveBeenCalledTimes(1);
+            expect(where).toHaveBeenCalledWith(expect.not.objectContaining(notDeleted));
+        });
         test('findHandlerFunc - add not deleted options to query', () => {
             const where = jest.fn();
             const conditions = { name: 'Dazdraperma' };
@@ -295,7 +326,7 @@ describe('module creator', () => {
                 name: 'Dazdraperma',
             };
             const options = { single: true };
-            MiddlewareFunctions.softRemoveFunc.call(scope, query, options);
+            MiddlewareFunctions.softRemove.call(scope, query, options);
             expect(scope.updateOne).toHaveBeenCalledTimes(1);
             expect(scope.updateOne).toHaveBeenLastCalledWith(query, deleted, options, undefined);
         });
@@ -309,7 +340,7 @@ describe('module creator', () => {
                 name: 'Dazdraperma',
             };
             const options = { skip: 1 };
-            MiddlewareFunctions.softRemoveFunc.call(scope, query, options);
+            MiddlewareFunctions.softRemove.call(scope, query, options);
             expect(scope.updateMany).toHaveBeenCalledTimes(1);
             expect(scope.updateMany).toHaveBeenLastCalledWith(query, deleted, options, undefined);
         });
@@ -323,7 +354,7 @@ describe('module creator', () => {
                 name: 'Dazdraperma',
             };
             const callback = jest.fn();
-            MiddlewareFunctions.softRemoveFunc.call(scope, query, callback);
+            MiddlewareFunctions.softRemove.call(scope, query, callback);
             expect(scope.updateMany).toHaveBeenCalledTimes(1);
             expect(scope.updateMany).toHaveBeenLastCalledWith(query, deleted, {}, callback);
         });
@@ -338,13 +369,13 @@ describe('module creator', () => {
             };
             const options = { skip: 1 };
             const callback = jest.fn();
-            MiddlewareFunctions.softRemoveFunc.call(scope, query, options, callback);
+            MiddlewareFunctions.softRemove.call(scope, query, options, callback);
             expect(scope.updateMany).toHaveBeenCalledTimes(1);
             expect(scope.updateMany).toHaveBeenLastCalledWith(query, deleted, options, callback);
         });
 
         test('singleSoftRemove - calling soft remove with right params and bind this', () => {
-            const softRemoveSpy = jest.spyOn(MiddlewareFunctions, 'softRemoveFunc');
+            const softRemoveSpy = jest.spyOn(MiddlewareFunctions, 'softRemove');
             const scope: any = {
                 updateOne: jest.fn(),
                 updateMany: jest.fn(),
@@ -353,7 +384,7 @@ describe('module creator', () => {
                 name: 'Dazdraperma',
             };
             const callback = jest.fn();
-            MiddlewareFunctions.singleSoftRemove.call(scope, query, callback);
+            MiddlewareFunctions.softRemoveOne.call(scope, query, callback);
             expect(softRemoveSpy).toHaveBeenCalledTimes(1);
             expect(softRemoveSpy).toHaveBeenLastCalledWith(query, { single: true }, callback);
             // checking updateOne called to know that this binded corretly
@@ -361,7 +392,7 @@ describe('module creator', () => {
         });
 
         test('findOneAndSoftDelete - calling findOneAndUpdate with right params when first arg is not a callback', () => {
-            const softRemoveSpy = jest.spyOn(MiddlewareFunctions, 'softRemoveFunc');
+            const softRemoveSpy = jest.spyOn(MiddlewareFunctions, 'softRemove');
             const scope: any = {
                 findOneAndUpdate: jest.fn(),
             };
