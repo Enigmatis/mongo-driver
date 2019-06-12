@@ -317,7 +317,7 @@ describe('module creator', () => {
             expect(pipeArr[pipeArr.length - 1]).toEqual({ $match: notDeleted });
         });
 
-        test('softRemoveFunc - calling updateOne with right params when single', () => {
+        test('softRemove - calling updateOne with right params when single', () => {
             const scope: any = {
                 updateOne: jest.fn(),
                 updateMany: jest.fn(),
@@ -331,7 +331,7 @@ describe('module creator', () => {
             expect(scope.updateOne).toHaveBeenLastCalledWith(query, deleted, options, undefined);
         });
 
-        test('softRemoveFunc - calling updateMany with right params when not single', () => {
+        test('softRemove - calling updateMany with right params when not single', () => {
             const scope: any = {
                 updateOne: jest.fn(),
                 updateMany: jest.fn(),
@@ -345,7 +345,7 @@ describe('module creator', () => {
             expect(scope.updateMany).toHaveBeenLastCalledWith(query, deleted, options, undefined);
         });
 
-        test('softRemoveFunc - passing callback when callback is second argument', () => {
+        test('softRemove - passing callback when callback is second argument', () => {
             const scope: any = {
                 updateOne: jest.fn(),
                 updateMany: jest.fn(),
@@ -359,7 +359,7 @@ describe('module creator', () => {
             expect(scope.updateMany).toHaveBeenLastCalledWith(query, deleted, {}, callback);
         });
 
-        test('softRemoveFunc - passing callback when callback is last argument', () => {
+        test('softRemove - passing callback when callback is last argument', () => {
             const scope: any = {
                 updateOne: jest.fn(),
                 updateMany: jest.fn(),
@@ -374,7 +374,7 @@ describe('module creator', () => {
             expect(scope.updateMany).toHaveBeenLastCalledWith(query, deleted, options, callback);
         });
 
-        test('singleSoftRemove - calling soft remove with right params and bind this', () => {
+        test('softRemoveOne - calling soft remove with right params and bind this', () => {
             const softRemoveSpy = jest.spyOn(MiddlewareFunctions, 'softRemove');
             const scope: any = {
                 updateOne: jest.fn(),
