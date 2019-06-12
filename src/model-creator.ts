@@ -1,4 +1,8 @@
-import { MongoConfiguration, PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
+import {
+    PolarisBaseContext,
+    PolarisRequestHeaders,
+    SoftDeleteConfiguration,
+} from '@enigmatis/utills';
 import * as Joi from 'joi';
 import { Model, model, models, Schema } from 'mongoose';
 import { getCollectionName } from './schema-helpers/middleware-functions';
@@ -30,7 +34,7 @@ export const getModelCreator = <T>(
     collectionPrefix: string,
     schemaOrCreator: Schema | SchemaCreator,
 ): ModelCreator<T> => {
-    return ({ headers, mongoConfiguration }: PolarisBaseContext): Model<InnerModelType<T>> => {
+    return ({ headers, softDeleteConfiguration }: PolarisBaseContext): Model<InnerModelType<T>> => {
         const collectionName = getCollectionName(collectionPrefix, headers);
         return (
             models[collectionName] ||
@@ -40,7 +44,7 @@ export const getModelCreator = <T>(
                     collectionPrefix,
                     schemaOrCreator,
                     headers,
-                    mongoConfiguration,
+                    softDeleteConfiguration,
                 ),
             )
         );
@@ -54,7 +58,7 @@ const createSchemaForModel = <T>(
     collectionPrefix: string,
     schemaOrCreator: Schema | SchemaCreator,
     headers: PolarisRequestHeaders,
-    mongoConfiguration?: MongoConfiguration,
+    softDeleteConfiguration?: SoftDeleteConfiguration,
 ) => {
     const schema =
         schemaOrCreator instanceof Function
@@ -62,7 +66,7 @@ const createSchemaForModel = <T>(
             : schemaOrCreator.clone();
     headers = checkHeaders(headers);
     addFields(schema);
-    addQueryMiddleware(schema, headers, mongoConfiguration);
+    addQueryMiddleware(schema, headers, softDeleteConfiguration);
     addDocumentMiddleware(schema, headers);
     addModelMiddleware(schema, headers);
     return schema;

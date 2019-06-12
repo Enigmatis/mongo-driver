@@ -1,4 +1,4 @@
-import { MongoConfiguration, PolarisRequestHeaders } from '@enigmatis/utills';
+import { PolarisRequestHeaders, SoftDeleteConfiguration } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
 import { RepositoryModel } from '../model-creator';
 import { InnerModelType } from '../types';
@@ -17,7 +17,7 @@ export const addDynamicPropertiesToDocument = <T extends RepositoryModel>(
 
 export const getPreSave = (headers: PolarisRequestHeaders) => {
     return function preSaveFunc(this: InnerModelType<any>, next: () => void) {
-        // using thisModule to be abale to mock softRemoveFunc in tests
+        // using thisModule to be abale to mock softRemove in tests
         thisModule.addDynamicPropertiesToDocument(this, headers);
         next();
     };
@@ -26,7 +26,7 @@ export const getPreSave = (headers: PolarisRequestHeaders) => {
 export const getPreInsertMany = (headers: PolarisRequestHeaders) => {
     return function preInsertMany(this: Model<any>, next: HookNextFunction, docs: any[]) {
         docs.forEach(doc => {
-            // using thisModule to be abale to mock softRemoveFunc in tests
+            // using thisModule to be abale to mock softRemove in tests
             thisModule.addDynamicPropertiesToDocument(doc, headers);
         });
         return next();
@@ -35,7 +35,7 @@ export const getPreInsertMany = (headers: PolarisRequestHeaders) => {
 
 export const getFindHandler = (
     headers: PolarisRequestHeaders,
-    mongoConfiguration?: MongoConfiguration,
+    softDeleteConfiguration?: SoftDeleteConfiguration,
 ) => {
     return function findHandler(this: any) {
         const conditions = this._conditions;
@@ -47,7 +47,8 @@ export const getFindHandler = (
                 : { realityId: headers.realityId });
         const deletedCondition =
             !conditions.deleted &&
-            (!(mongoConfiguration && mongoConfiguration.softDeleteReturnEntities) && notDeleted);
+            (!(softDeleteConfiguration && softDeleteConfiguration.softDeleteReturnEntities) &&
+                notDeleted);
         this.where({
             ...realityId,
             ...deletedCondition,
@@ -83,7 +84,7 @@ export function softRemoveOne(
     query: any,
     callback?: (err: any, raw: any) => void,
 ) {
-    // using thisModule to be abale to mock softRemoveFunc in tests
+    // using thisModule to be abale to mock softRemove in tests
     return thisModule.softRemove.call(this, query, { single: true }, callback);
 }
 

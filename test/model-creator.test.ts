@@ -1,4 +1,8 @@
-import { MongoConfiguration, PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
+import {
+    PolarisBaseContext,
+    PolarisRequestHeaders,
+    SoftDeleteConfiguration,
+} from '@enigmatis/utills';
 import { Schema } from 'mongoose';
 import { getModelCreator } from '../src/model-creator';
 import { deleted, notDeleted } from '../src/schema-helpers/constants';
@@ -156,10 +160,10 @@ describe('module creator', () => {
             expect(model.findOneAndRemove).toBe(MiddlewareFunctions.findOneAndSoftDelete);
         });
         test('soft delete not allowed', () => {
-            const softDeleteNotAllowedMongoConfig: MongoConfiguration = {
+            const softDeleteNotAllowed: SoftDeleteConfiguration = {
                 allowSoftDelete: false,
             };
-            context.mongoConfiguration = softDeleteNotAllowedMongoConfig;
+            context.softDeleteConfiguration = softDeleteNotAllowed;
             const modelCreator2 = getModelCreator('testing2', personSchema);
             const model2 = modelCreator2(context);
             expect(model2.schema.statics).not.toEqual({
@@ -188,10 +192,10 @@ describe('module creator', () => {
 
     describe("middleware's functions", () => {
         test('findHandlerFunc - soft delete return entities true', () => {
-            const softDeleteReturnEntitiesMongoConfig: MongoConfiguration = {
+            const softDeleteReturnEntities: SoftDeleteConfiguration = {
                 softDeleteReturnEntities: true,
             };
-            context.mongoConfiguration = softDeleteReturnEntitiesMongoConfig;
+            context.softDeleteConfiguration = softDeleteReturnEntities;
             const modelCreator2 = getModelCreator('testing2', personSchema);
             const model2 = modelCreator2(context);
             const where = jest.fn();
@@ -199,7 +203,7 @@ describe('module creator', () => {
             const headers = { realityId: testReality };
             const findHandler = MiddlewareFunctions.getFindHandler(
                 headers,
-                softDeleteReturnEntitiesMongoConfig,
+                softDeleteReturnEntities,
             );
             findHandler.call({ where, _conditions: conditions });
             expect(where).toHaveBeenCalledTimes(1);
