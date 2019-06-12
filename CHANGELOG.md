@@ -1,3 +1,11 @@
+## [1.8.13](https://github.com/Enigmatis/mongo-driver/compare/v1.8.12...v1.8.13) (2019-06-12)
+
+
+### Bug Fixes
+
+* soft delete configuration ([5b2bf16](https://github.com/Enigmatis/mongo-driver/commit/5b2bf16))
+* soft remove ([9bab962](https://github.com/Enigmatis/mongo-driver/commit/9bab962))
+
 ## [1.8.12](https://github.com/Enigmatis/mongo-driver/compare/v1.8.11...v1.8.12) (2019-06-10)
 
 
