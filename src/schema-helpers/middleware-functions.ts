@@ -1,5 +1,6 @@
 import { PolarisRequestHeaders } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
+import { getNextDataVersion } from '../data-version/data-version-manager';
 import { DataVersionModel } from '../data-version/data-version-model';
 import { ModelConfiguration } from '../model-config';
 import { RepositoryModel } from '../model-creator';
@@ -20,13 +21,7 @@ export const addDynamicPropertiesToDocument = <T extends RepositoryModel>(
 
 export const getPreSave = (headers: PolarisRequestHeaders) => {
     return async function preSaveFunc(this: InnerModelType<any>, next: () => void) {
-        const currentDataVersion = await DataVersionModel.findOneAndUpdate(
-            {},
-            { $inc: { dataVersion: 1 } },
-            { new: true, upsert: true },
-        );
         // using thisModule to be abale to mock softRemoveFunc in tests
-        headers.dataVersion = currentDataVersion.dataVersion;
         thisModule.addDynamicPropertiesToDocument(this, headers);
         next();
     };

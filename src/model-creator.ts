@@ -1,6 +1,7 @@
 import { PolarisBaseContext, PolarisRequestHeaders } from '@enigmatis/utills';
 import * as Joi from 'joi';
 import { Model, model, models, Schema } from 'mongoose';
+import { addDataVersionMiddleware } from './data-version/data-version-middleware';
 import { ModelConfiguration } from './model-config';
 import { getCollectionName } from './schema-helpers/middleware-functions';
 import {
@@ -68,6 +69,7 @@ const createSchemaForModel = <T>(
     addQueryMiddleware(schema, headers, modelConfiguration);
     addDocumentMiddleware(schema, headers);
     addModelMiddleware(schema, headers);
+    addDataVersionMiddleware(schema, headers);
     return schema;
 };
 
