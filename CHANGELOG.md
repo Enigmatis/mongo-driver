@@ -1,3 +1,64 @@
+## [1.8.13](https://github.com/Enigmatis/mongo-driver/compare/v1.8.12...v1.8.13) (2019-06-12)
+
+
+### Bug Fixes
+
+* soft delete configuration ([5b2bf16](https://github.com/Enigmatis/mongo-driver/commit/5b2bf16))
+* soft remove ([9bab962](https://github.com/Enigmatis/mongo-driver/commit/9bab962))
+
+## [1.8.12](https://github.com/Enigmatis/mongo-driver/compare/v1.8.11...v1.8.12) (2019-06-10)
+
+
+### Bug Fixes
+
+* constants ([aedbb02](https://github.com/Enigmatis/mongo-driver/commit/aedbb02))
+
+## [1.8.11](https://github.com/Enigmatis/mongo-driver/compare/v1.8.10...v1.8.11) (2019-06-10)
+
+
+### Bug Fixes
+
+* conditions ([ec89bb0](https://github.com/Enigmatis/mongo-driver/commit/ec89bb0))
+
+## [1.8.10](https://github.com/Enigmatis/mongo-driver/compare/v1.8.9...v1.8.10) (2019-06-10)
+
+
+### Bug Fixes
+
+* conditions ([9ee563d](https://github.com/Enigmatis/mongo-driver/commit/9ee563d))
+* conditions ([4391f4e](https://github.com/Enigmatis/mongo-driver/commit/4391f4e))
+* conditions ([d097edb](https://github.com/Enigmatis/mongo-driver/commit/d097edb))
+
+## [1.8.9](https://github.com/Enigmatis/mongo-driver/compare/v1.8.8...v1.8.9) (2019-06-10)
+
+
+### Bug Fixes
+
+* conditions ([b128d2b](https://github.com/Enigmatis/mongo-driver/commit/b128d2b))
+
+## [1.8.8](https://github.com/Enigmatis/mongo-driver/compare/v1.8.7...v1.8.8) (2019-06-10)
+
+
+### Bug Fixes
+
+* conditions ([05ab599](https://github.com/Enigmatis/mongo-driver/commit/05ab599))
+
+## [1.8.7](https://github.com/Enigmatis/mongo-driver/compare/v1.8.6...v1.8.7) (2019-06-10)
+
+
+### Bug Fixes
+
+* aggregate condition ([2a2d642](https://github.com/Enigmatis/mongo-driver/commit/2a2d642))
+* conditions ([5ea1385](https://github.com/Enigmatis/mongo-driver/commit/5ea1385))
+* conditions ([a2d799a](https://github.com/Enigmatis/mongo-driver/commit/a2d799a))
+
+## [1.8.6](https://github.com/Enigmatis/mongo-driver/compare/v1.8.5...v1.8.6) (2019-06-10)
+
+
+### Bug Fixes
+
+* move mongo configuration to basecontext ([042749e](https://github.com/Enigmatis/mongo-driver/commit/042749e))
+
 ## [1.8.5](https://github.com/Enigmatis/mongo-driver/compare/v1.8.4...v1.8.5) (2019-06-05)
 
 
