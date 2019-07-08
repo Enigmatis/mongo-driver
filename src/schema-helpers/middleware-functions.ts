@@ -1,8 +1,5 @@
 import { PolarisRequestHeaders, SoftDeleteConfiguration } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
-import { getNextDataVersion } from '../data-version/data-version-manager';
-import { DataVersionModel } from '../data-version/data-version-model';
-import { ModelConfiguration } from '../model-config';
 import { RepositoryModel } from '../model-creator';
 import { InnerModelType } from '../types';
 import { deleted, notDeleted } from './constants';
