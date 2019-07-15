@@ -1,10 +1,11 @@
 import {
+    ExecutionMetadata,
     PolarisBaseContext,
     PolarisRequestHeaders,
     SoftDeleteConfiguration,
 } from '@enigmatis/utills';
 import { Schema } from 'mongoose';
-import { getModelCreator } from '../src/model-creator';
+import { getModelCreator } from '../src/model-manager';
 import { deleted, notDeleted } from '../src/schema-helpers/constants';
 import * as MiddlewareFunctions from '../src/schema-helpers/middleware-functions';
 import { ModelCreator, ModelType } from '../src/types';
@@ -26,13 +27,14 @@ describe('module creator', () => {
     const upnHeaderName = 'Kukutsapol';
     let modelCreator: ModelCreator<Person>;
     let model: ModelType<Person>;
+    const testMetadata: ExecutionMetadata = {};
     let testHeaders: PolarisRequestHeaders;
     let context: PolarisBaseContext;
     let paths: any;
     beforeAll(() => {
         modelCreator = getModelCreator(testCollectionPrefix, personSchema);
         testHeaders = { realityId: testReality, upn: upnHeaderName };
-        context = { headers: testHeaders };
+        context = { headers: testHeaders, executionMetadata: testMetadata };
         model = modelCreator(context);
         paths = (model.schema as any).paths;
     });

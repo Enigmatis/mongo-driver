@@ -12,6 +12,7 @@ import {
     addModelMiddleware,
     addQueryMiddleware,
 } from './schema-helpers/middleware-setters';
+import { ModelExecutor } from './schema-helpers/model-executor';
 import { addFields } from './schema-helpers/repository-fields';
 import { InnerModelType, ModelCreator } from './types';
 
@@ -31,6 +32,13 @@ export interface RepositoryModel {
 }
 
 export declare type SchemaCreator = (refNameCreator: (name: string) => string) => Schema;
+
+export const getModelExecutor = <T>(
+    collectionPrefix: string,
+    schemaOrCreator: Schema | SchemaCreator,
+): ModelExecutor<T> => {
+    return new ModelExecutor<T>(getModelCreator<T>(collectionPrefix, schemaOrCreator));
+};
 
 export const getModelCreator = <T>(
     collectionPrefix: string,
@@ -71,7 +79,7 @@ const createSchemaForModel = <T>(
     addQueryMiddleware(schema, headers, softDeleteConfiguration);
     addDocumentMiddleware(schema, headers);
     addModelMiddleware(schema, headers);
-    addDataVersionMiddleware(schema, headers);
+    addDataVersionMiddleware(schema);
     return schema;
 };
 

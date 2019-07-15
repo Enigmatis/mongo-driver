@@ -1,6 +1,6 @@
 import { PolarisRequestHeaders } from '@enigmatis/utills';
 import { Document, Model } from 'mongoose';
-import { RepositoryModel } from './model-creator';
+import { RepositoryModel } from './model-manager';
 
 export declare type InnerModelType<T> = T & Document & RepositoryModel;
 export declare type ModelCreator<T> = ({

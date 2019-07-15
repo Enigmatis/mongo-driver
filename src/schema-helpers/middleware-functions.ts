@@ -1,6 +1,6 @@
 import { PolarisRequestHeaders, SoftDeleteConfiguration } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
-import { RepositoryModel } from '../model-creator';
+import { RepositoryModel } from '../model-manager';
 import { InnerModelType } from '../types';
 import { deleted, notDeleted } from './constants';
 import * as thisModule from './middleware-functions';

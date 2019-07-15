@@ -1,17 +1,16 @@
-import { PolarisRequestHeaders } from '@enigmatis/utills';
 import { Schema } from 'mongoose';
 import { InnerModelType } from '../types';
 import { getNextDataVersion } from './data-version-manager';
 
-export const addDataVersionMiddleware = (schema: Schema, headers: PolarisRequestHeaders) => {
+export const addDataVersionMiddleware = (schema: Schema) => {
     ['findOneAndUpdate', 'update', 'updateOne', 'updateMany', 'save', 'insertMany'].forEach(
         middleware => {
-            schema.pre(middleware, getDataVersionHandler(headers));
+            schema.pre(middleware, getDataVersionHandler());
         },
     );
 };
 
-const getDataVersionHandler = (headers: PolarisRequestHeaders) => {
+const getDataVersionHandler = () => {
     return async function dataVersionSetter(this: InnerModelType<any>, next: () => void) {
         this.dataVersion = await getNextDataVersion();
         next();
