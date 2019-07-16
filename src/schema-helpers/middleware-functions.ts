@@ -7,13 +7,12 @@ import * as thisModule from './middleware-functions';
 
 export const addDynamicPropertiesToDocument = <T extends RepositoryModel>(
     document: T,
-    { realityId, upn, dataVersion }: PolarisRequestHeaders,
+    { realityId, upn }: PolarisRequestHeaders,
 ) => {
     document.lastUpdateDate = new Date();
     document.realityId = realityId!;
     document.createdBy = document.createdBy || upn;
     document.lastUpdatedBy = upn;
-    document.dataVersion = dataVersion || document.dataVersion;
 };
 
 export const getPreSave = (headers: PolarisRequestHeaders) => {
