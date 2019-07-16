@@ -1,6 +1,6 @@
 import { PolarisRequestHeaders, SoftDeleteConfiguration } from '@enigmatis/utills';
 import { Aggregate, HookNextFunction, Model } from 'mongoose';
-import { RepositoryModel } from '../model-creator';
+import { RepositoryModel } from '../model-manager';
 import { InnerModelType } from '../types';
 import { deleted, notDeleted } from './constants';
 import * as thisModule from './middleware-functions';
@@ -16,7 +16,7 @@ export const addDynamicPropertiesToDocument = <T extends RepositoryModel>(
 };
 
 export const getPreSave = (headers: PolarisRequestHeaders) => {
-    return function preSaveFunc(this: InnerModelType<any>, next: () => void) {
+    return async function preSaveFunc(this: InnerModelType<any>, next: () => void) {
         // using thisModule to be abale to mock softRemove in tests
         thisModule.addDynamicPropertiesToDocument(this, headers);
         next();
@@ -24,7 +24,7 @@ export const getPreSave = (headers: PolarisRequestHeaders) => {
 };
 
 export const getPreInsertMany = (headers: PolarisRequestHeaders) => {
-    return function preInsertMany(this: Model<any>, next: HookNextFunction, docs: any[]) {
+    return async function preInsertMany(this: Model<any>, next: HookNextFunction, docs: any[]) {
         docs.forEach(doc => {
             // using thisModule to be abale to mock softRemove in tests
             thisModule.addDynamicPropertiesToDocument(doc, headers);

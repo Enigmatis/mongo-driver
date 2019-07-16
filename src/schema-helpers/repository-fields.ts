@@ -14,5 +14,6 @@ export const addFields = (schema: Schema) => {
         createdBy: String,
         lastUpdatedBy: String,
         realityId: Number,
+        dataVersion: Number,
     });
 };
